@@ -1,3 +1,6 @@
+# Auth token security
+auth.json
+
 # Logs
 logs
 *.log
