@@ -10,7 +10,6 @@
     },
     "license": "MIT",
     "dependencies": {
-        "discord.io": "^2.5.3",
-        "winston": "^3.2.1"
+        "discord.js": "^12.0.2"
     }
 }
