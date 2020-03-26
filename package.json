@@ -1,0 +1,8 @@
+{
+    "name": "InstantRunoffBot",
+    "version": "0.1.0",
+    "description": "Bot for running instant runoff voting elections in a Discord channel.",
+    "main": "bot.js",
+    "author": "Matt VanderKolk",
+    "dependencies": {}
+}
