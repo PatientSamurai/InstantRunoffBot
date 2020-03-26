@@ -4,5 +4,8 @@
     "description": "Bot for running instant runoff voting elections in a Discord channel.",
     "main": "bot.js",
     "author": "Matt VanderKolk",
-    "dependencies": {}
+    "dependencies": {
+        "discord.io": "^2.5.3",
+        "winston": "^3.2.1"
+    }
 }
