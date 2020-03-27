@@ -11,8 +11,8 @@
   "license": "MIT",
   "scripts": {
     "start": "tsc && node .",
-    "test": "tsc && nodemon --inspect",
-    "build": "tsc"
+    "test": "npm run build && nodemon --inspect",
+    "build": "tsc && tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
     "@types/node": "^12.12.31",

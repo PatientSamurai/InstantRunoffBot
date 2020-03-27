@@ -3,7 +3,7 @@ import authData from './auth-data';
 
 const client = new Client();
 
-client.on('ready', function(): void {
+client.on('ready', () => {
     console.log('Connected');
 
     if (client.user == null) {
@@ -13,21 +13,21 @@ client.on('ready', function(): void {
     }
 });
 
-client.on('message', function (message: Message | PartialMessage): void {
+client.on('message', (message: Message | PartialMessage) => {
     // We haven't opted into partials so this should bever be partial
     // but we need the type check.
     if (message.partial) {
         return;
     }
 
-    let content = message.content;
+    const content = message.content;
     // Check for leading '!'
-    if (content.substring(0, 1) != '!') {
+    if (content.substring(0, 1) !== '!') {
         return;
     }
 
     let args = content.substring(1).split(' ');
-    let cmd = args[0];
+    const cmd = args[0];
     args = args.splice(1);
 
     switch (cmd) {
