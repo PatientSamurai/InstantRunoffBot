@@ -9,8 +9,14 @@
         "url": "https://github.com/PatientSamurai/InstantRunoffBot.git"
     },
     "license": "MIT",
+    "scripts": {
+        "start": "node index.js",
+        "test": "npx nodemon --inspect index.js"
+    },
     "dependencies": {
-        "discord.js": "^12.0.2",
+        "discord.js": "^12.0.2"
+    },
+    "devDependencies": {
         "nodemon": "^2.0.2"
     }
 }
