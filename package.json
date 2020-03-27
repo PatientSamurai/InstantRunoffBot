@@ -1,25 +1,27 @@
 {
-    "name": "InstantRunoffBot",
-    "version": "0.1.0",
-    "description": "Bot for running instant runoff voting elections in a Discord channel.",
-    "main": "dist/index.js",
-    "author": "Matt VanderKolk",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/PatientSamurai/InstantRunoffBot.git"
-    },
-    "license": "MIT",
-    "scripts": {
-        "start": "tsc && node .",
-        "test": "tsc && nodemon --inspect"
-    },
-    "dependencies": {
-        "@types/node": "^12.12.31",
-        "discord.js": "^12.0.2",
-        "typescript": "^3.8.3"
-    },
-    "devDependencies": {
-        "nodemon": "^2.0.2",
-        "tslint": "^6.1.0"
-    }
+  "name": "instant-runoff-bot",
+  "version": "0.1.0",
+  "description": "Bot for running instant runoff voting elections in a Discord channel.",
+  "main": "dist/index.js",
+  "author": "Matt VanderKolk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PatientSamurai/InstantRunoffBot.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "tsc && node .",
+    "test": "tsc && nodemon --inspect",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/node": "^12.12.31",
+    "@types/ws": "^7.2.3",
+    "discord.js": "^12.0.2",
+    "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2",
+    "tslint": "^6.1.0"
+  }
 }

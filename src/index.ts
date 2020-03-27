@@ -1,30 +1,41 @@
-import { Client } from 'discord.js';
-import AuthData from './auth-data';
+import { Client, Message, PartialMessage } from 'discord.js';
+import authData from './auth-data';
 
-const bot = new Client();
+const client = new Client();
 
-bot.on('ready', () => {
+client.on('ready', function(): void {
     console.log('Connected');
-    console.log('Logged in as: ' + bot.user.tag);
+
+    if (client.user == null) {
+        console.warn("Client user is null.");
+    } else {
+        console.log('Logged in as: ' + client.user.tag);
+    }
 });
 
-bot.on('message', message => {
-    var content = message.content;
-    // Our bot needs to know if it will execute a command
-    // It will listen for messages that will start with `!`
-    if (content.substring(0, 1) == '!') {
-        var args = content.substring(1).split(' ');
-        var cmd = args[0];
-       
-        args = args.splice(1);
-        switch(cmd) {
-            // !ping
-            case 'ping':
-                message.reply('Pong!');
-                break;
-            // Just add any case commands if you want to..
-         }
-     }
+client.on('message', function (message: Message | PartialMessage): void {
+    // We haven't opted into partials so this should bever be partial
+    // but we need the type check.
+    if (message.partial) {
+        return;
+    }
+
+    let content = message.content;
+    // Check for leading '!'
+    if (content.substring(0, 1) != '!') {
+        return;
+    }
+
+    let args = content.substring(1).split(' ');
+    let cmd = args[0];
+    args = args.splice(1);
+
+    switch (cmd) {
+        // !ping
+        case 'ping':
+            message.reply('Pong!');
+            break;
+    }
 });
 
-bot.login(AuthData.token);
+client.login(authData.token);

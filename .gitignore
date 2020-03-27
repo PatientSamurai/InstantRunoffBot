@@ -1,6 +1,9 @@
 # Auth token security
 auth-data.ts
 
+# Visual Studio files
+.vs
+
 # Logs
 logs
 *.log

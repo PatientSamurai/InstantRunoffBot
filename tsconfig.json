@@ -1,14 +1,15 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "allowJs": true,
-        "target": "es2015",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": "dist"
-    },
-    "include": [
-        "src/**/*"
-    ],
-    "lib": ["es2015"]
+  "compilerOptions": {
+    "module": "commonjs",
+    "allowJs": true,
+    "strict": true,
+    "target": "es2015",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist"
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "lib": [ "es2015" ]
 }

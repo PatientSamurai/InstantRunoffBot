@@ -1,4 +1,4 @@
-var AuthData = {
+const AuthData = {
     "token": "Secret token goes here"
 };
 
