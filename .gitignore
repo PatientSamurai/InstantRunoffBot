@@ -1,5 +1,5 @@
 # Auth token security
-auth.json
+auth-data.ts
 
 # Logs
 logs

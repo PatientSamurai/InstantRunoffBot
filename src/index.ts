@@ -1,7 +1,7 @@
-var Discord = require('discord.js');
-var auth = require('./auth.json');
+import { Client } from 'discord.js';
+import AuthData from './auth-data';
 
-const bot = new Discord.Client();
+const bot = new Client();
 
 bot.on('ready', () => {
     console.log('Connected');
@@ -27,4 +27,4 @@ bot.on('message', message => {
      }
 });
 
-bot.login(auth.token);
+bot.login(AuthData.token);

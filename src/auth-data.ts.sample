@@ -1,0 +1,5 @@
+var AuthData = {
+    "token": "Secret token goes here"
+};
+
+export default AuthData;

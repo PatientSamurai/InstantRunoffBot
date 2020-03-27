@@ -2,7 +2,7 @@
     "name": "InstantRunoffBot",
     "version": "0.1.0",
     "description": "Bot for running instant runoff voting elections in a Discord channel.",
-    "main": "bot.js",
+    "main": "dist/index.js",
     "author": "Matt VanderKolk",
     "repository": {
         "type": "git",
@@ -10,13 +10,16 @@
     },
     "license": "MIT",
     "scripts": {
-        "start": "node index.js",
-        "test": "npx nodemon --inspect index.js"
+        "start": "tsc && node .",
+        "test": "tsc && nodemon --inspect"
     },
     "dependencies": {
-        "discord.js": "^12.0.2"
+        "@types/node": "^12.12.31",
+        "discord.js": "^12.0.2",
+        "typescript": "^3.8.3"
     },
     "devDependencies": {
-        "nodemon": "^2.0.2"
+        "nodemon": "^2.0.2",
+        "tslint": "^6.1.0"
     }
 }

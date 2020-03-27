@@ -1,6 +1,6 @@
 Set up:
 1. Clone repo
-2. Copy "auth.json.sample" to "auth.json" and insert bot secret
+2. Copy "src/auth-data.ts.sample" to "src/auth-data.ts" and insert bot secret
 3. Install Node.js from https://nodejs.org
 4. Run "npm install" from source root
 
