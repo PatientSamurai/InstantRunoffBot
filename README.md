@@ -5,9 +5,9 @@ Set up:
 4. Run "npm install" from source root
 
 Run:
-1. Run "npm start" from source root
+1. Run "npm run start" from source root
 
 Debug:
-1. Run "npm test" from source root
+1. Run "npm run test" from source root
 2. Open "chrome://inspect/" in Chrome
 3. Click "Open dedicated DevTools for Node"
