@@ -1,8 +1,8 @@
 import { Client, Message, PartialMessage, GuildMember, Role } from 'discord.js';
+import { Election } from './election';
+import { Candidate } from './candidate';
 
 export class Bot {
-    private readonly AdminRoleName = 'ElectionAdmin';
-
     constructor(public client: Client) {
         client.on('ready', this.onReady.bind(this));
         client.on('message', this.onMessage.bind(this));
@@ -18,7 +18,7 @@ export class Bot {
         }
     }
 
-    onMessage(message: Message | PartialMessage): void {
+    async onMessage(message: Message | PartialMessage): Promise<void> {
         // We haven't opted into partials so this should bever be partial
         // but we need the type check.
         if (message.partial) {
@@ -26,29 +26,50 @@ export class Bot {
             return;
         }
 
-        const content = message.content;
+        try {
+            const content: string = message.content;
 
-        // Check for leading '!'
-        if (content.substring(0, 1) !== '!') {
-            return;
-        }
+            // Check for leading '!'
+            if (content.substring(0, 1) !== '!') {
+                return;
+            }
 
-        let args = content.substring(1).split(' ');
-        const cmd = args[0];
-        args = args.splice(1);
+            let args: string[] = content.substring(1).split(' ');
+            const cmd: string = args[0];
+            args = args.splice(1);
 
-        switch (cmd) {
-            // !ping
-            case 'ping':
-                message.reply('Pong!' + this.hasRole(message.member, this.AdminRoleName));
-                break;
+            switch (cmd) {
+                // !ping
+                case 'ping':
+                    await message.reply('Pong!');
+                    break;
+                // !audit
+                case 'audit':
+                    const election: Election = await Election.CreateElection(message);
+                    let reply: string = 'Election looks to be in order. Candidates:';
+                    for (const candidate of election.candidates) {
+                        reply += '\n  - ' + candidate.name;
+                    }
+                    await message.reply(reply);
+                    break;
+            }
+        } catch (err) {
+            try {
+                await message.reply('Error: ' + err.message);
+            } catch (err2) {
+                console.warn('Error sending error: ' + err2.message);
+                console.warn('Original error: ' + err.message);
+            }
         }
     }
 
-    hasRole(user: GuildMember | null, roleName: string): boolean {
-        if (user == null) {
+    memberHasRole(message: Message, roleName: string): boolean {
+        if (message.member == null) {
+            console.warn('message received with null member.');
             return false;
         }
+
+        const user: GuildMember = message.member;
 
         if (user.roles.cache.find((role: Role) => role.name === roleName) != null) {
             return true;
