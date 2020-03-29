@@ -17,4 +17,5 @@ NPM Scripts:
   - "start": Builds TypeScript and runs built JavaScript with Node.
   - "build:dev": Builds TypeScript and runs static TSLint check.
   - "start:dev": Starts TS Node with inspector against source.
-  - "test": Runs Nodemon to start:dev and auto watch source for changes.
+  - "build:watch": Runs Nodemon to call build:dev and watch source for changes.
+  - "start:watch": Runs Nodemon to start:dev and watch source for changes.

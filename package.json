@@ -14,13 +14,13 @@
     "start": "npm run build && node .",
     "build:dev": "npm run build && tslint -c tslint.json -p tsconfig.json",
     "start:dev": "node --inspect -r ts-node/register ./src/index.ts",
-    "test": "nodemon"
+    "build:watch": "nodemon --exec npm run build:dev",
+    "start:watch": "nodemon --exec npm run start:dev"
   },
   "nodemonConfig": {
     "watch": [
       "src"
     ],
-    "exec": "npm run start:dev",
     "ext": "ts"
   },
   "dependencies": {
