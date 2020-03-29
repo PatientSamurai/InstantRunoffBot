@@ -11,8 +11,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node .",
-    "build:dev": "tsc && tslint -c tslint.json -p tsconfig.json",
+    "start": "npm run build && node .",
+    "build:dev": "npm run build && tslint -c tslint.json -p tsconfig.json",
     "start:dev": "node --inspect -r ts-node/register ./src/index.ts",
     "test": "nodemon"
   },
