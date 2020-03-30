@@ -1,6 +1,5 @@
 import { Client, Message, PartialMessage, GuildMember, Role } from 'discord.js';
 import { Election } from './election';
-import { Candidate } from './candidate';
 
 export class Bot {
     constructor(public client: Client) {
@@ -39,27 +38,28 @@ export class Bot {
             args = args.splice(1);
 
             switch (cmd) {
-                // !ping
-                case 'ping':
-                    await message.reply('Pong!');
-                    break;
                 // !audit
                 case 'audit':
-                    const election: Election = await Election.CreateAsync(message);
-                    let reply: string = 'election looks to be in order. Candidates:';
-                    for (const candidate of election.candidates) {
-                        reply += '\n  - ' + candidate.name;
-
-                        if (candidate.votes.size > 0) {
-                            reply += '\n      ';
-                        }
-
-                        for (const [voter, oridnal] of candidate.votes) {
-                            reply += voter + '=>' + (oridnal + 1) + ' ';
-                        }
+                    {
+                        const election: Election = await Election.CreateAsync(message);
+                        let reply: string = 'Election looks to be in order.\n';
+                        reply += election.summarizeState(true /* includeVoters */);
+                        await message.reply(reply);
+                        break;
                     }
-                    await message.reply(reply);
-                    break;
+                // !tabulate
+                case 'tabulate':
+                    {
+                        // For this command we require permissions so let's check for those
+                        if (!this.memberHasRole(message, Election.AdminRoleName)) {
+                            await message.reply('This server requires the role "' + Election.AdminRoleName + '" to run this command.');
+                            break;
+                        }
+
+                        const election: Election = await Election.CreateAsync(message);
+                        election.performElection();
+                        break;
+                    }
             }
         } catch (err) {
             try {

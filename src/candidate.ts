@@ -20,7 +20,13 @@ export class Candidate {
         return candidate;
     }
 
-    trimName(): string {
+    voteCount(ordinal: number): number {
+        let count: number = 0;
+        this.votes.forEach((votedOrdinal: number) => { if (votedOrdinal === ordinal) { ++count; } });
+        return count;
+    }
+
+    private trimName(): string {
         const first: number = this.message.content.search(/\w/);
         const last: number = this.message.content.search(/\w[^\w]*$/);
         if (first === -1 || last === -1) {
@@ -30,7 +36,7 @@ export class Candidate {
         return this.message.content.substr(first, last - first + 1);
     }
 
-    async initializeAsync(): Promise<void> {
+    private async initializeAsync(): Promise<void> {
         for (let i: number = 0; i < Candidate.VoteReactions.length; ++i) {
             const reaction: MessageReaction | undefined = this.message.reactions.cache.get(Candidate.VoteReactions[i]);
             if (reaction === undefined) {
