@@ -23,7 +23,8 @@ To run an election:
     - The bot will tell you every step it takes and then display the winner.
     - The bot will mark the winning candidate with a :trophy: reaction (🏆).
     - The bot will mark the starting message with a :checkered_flag: reaction (🏁) to mark the election as complete.
-  6. The '!vote help' command will print usage commands.
+  6. The '!vote reset' command will reset the most recent election so that it can be run again.
+  7. The '!vote help' command will print usage commands.
 
 How instant runoff voting is handled:
   1. If there are currently any candidates with a majority of the remaining votes, that candidate wins.

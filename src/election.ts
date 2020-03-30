@@ -90,6 +90,44 @@ export class Election {
         await this.startingMessage!.react(Election.ElectionFinishedReaction);
     }
 
+    static async resetElectionAsync(commandMessage: Message, botUserId: Snowflake): Promise<void> {
+        const messages: Collection<Snowflake, Message> = await commandMessage.channel.messages.fetch({ limit: Election.MaxMessages });
+
+        let startingMessage: Message | null = null;
+        const candidates: Message[] = [];
+
+        for (const [id, message] of messages) {
+            if (this.messageIsStartingMessage(message)) {
+                startingMessage = message;
+                break;
+            } else if (this.messageIsCandidate(message)) {
+                candidates.push(message);
+            }
+        }
+
+        if (startingMessage == null) {
+            throw new Error('Could not find election start message in "' + Election.MaxMessages + '" messages.');
+        }
+
+        if (this.messageIsFinishedStartingMessage(startingMessage)) {
+            await Election.removeReactionAsync(startingMessage, Election.ElectionFinishedReaction, botUserId);
+        }
+
+        for (const candidate of candidates) {
+            if (Election.messageIsLoserCandidate(candidate)) {
+                await Election.removeReactionAsync(candidate, Election.LoserCandidateReaction, botUserId);
+            }
+
+            if (Election.messageIsWinnerCandidate(candidate)) {
+                await Election.removeReactionAsync(candidate, Election.WinnerCandidateReaction, botUserId);
+            }
+        }
+    }
+
+    private static async removeReactionAsync(message: Message, reactionEmoji: string, botUserId: Snowflake) {
+        await message.reactions.cache.get(reactionEmoji)?.users.remove(botUserId);
+    }
+
     private async initializeAsync(): Promise<void> {
         const data: ParsedElectionData = await this.parseChannelMessagesAsync();
         this.startingMessage = data.startingMessage;
@@ -108,18 +146,16 @@ export class Election {
         const candidates: Candidate[] = [];
 
         for (const [id, message] of messages) {
-            if (this.messageIsStartingMessage(message)) {
-                if (this.messageIsFinishedStartingMessage(message)) {
+            if (Election.messageIsStartingMessage(message)) {
+                if (Election.messageIsFinishedStartingMessage(message)) {
                     // This is a finished election so we should ignore it
                     throw new Error('Most recent election is already finished.');
                 }
 
                 startingMessage = message;
-                // console.log('Starting message: ' + message.content);
                 break;
-            } else if (this.messageIsCandidate(message)) {
+            } else if (Election.messageIsCandidate(message)) {
                 candidates.push(await Candidate.CreateAsync(message));
-                // console.log('Candidate: ' + candidates[candidates.length - 1].name);
             }
         }
 
@@ -132,15 +168,15 @@ export class Election {
         return { startingMessage, candidates: candidates.reverse() };
     }
 
-    private messageIsStartingMessage(message: Message): boolean {
+    private static messageIsStartingMessage(message: Message): boolean {
         return message.reactions.cache.has(Election.ElectionStartReaction);
     }
 
-    private messageIsFinishedStartingMessage(message: Message): boolean {
+    private static messageIsFinishedStartingMessage(message: Message): boolean {
         return message.reactions.cache.has(Election.ElectionFinishedReaction);
     }
 
-    private messageIsCandidate(message: Message): boolean {
+    private static messageIsCandidate(message: Message): boolean {
         for (const candidateEmoji of Election.CandidateReactions) {
             if (message.reactions.cache.has(candidateEmoji)) {
                 return true;
@@ -148,6 +184,14 @@ export class Election {
         }
 
         return false;
+    }
+
+    private static messageIsLoserCandidate(message: Message): boolean {
+        return message.reactions.cache.has(Election.LoserCandidateReaction);
+    }
+
+    private static messageIsWinnerCandidate(message: Message): boolean {
+        return message.reactions.cache.has(Election.WinnerCandidateReaction);
     }
 
     // Returns if any changes were made

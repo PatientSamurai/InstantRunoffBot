@@ -57,13 +57,23 @@ export class Bot {
                 case 'tabulate':
                     {
                         // For this command we require permissions so let's check for those
-                        if (!this.memberHasRole(message, Election.AdminRoleName)) {
-                            await message.reply('This server requires the role "' + Election.AdminRoleName + '" to run this command.');
-                            break;
-                        }
+                        this.checkMemberHasRole(message, Election.AdminRoleName);
 
                         const election: Election = await Election.CreateAsync(message);
                         election.performElection();
+                        break;
+                    }
+                case 'reset':
+                    {
+                        // For this command we require permissions so let's check for those
+                        this.checkMemberHasRole(message, Election.AdminRoleName);
+
+                        if (this.client.user == null) {
+                            throw new Error('Bot user not set.');
+                        }
+
+                        await Election.resetElectionAsync(message, this.client.user.id);
+                        await message.reply('Most recent election is now in un-tabulated state.');
                         break;
                     }
                 default:
@@ -85,24 +95,23 @@ export class Bot {
         }
     }
 
-    private memberHasRole(message: Message, roleName: string): boolean {
+    private checkMemberHasRole(message: Message, roleName: string): void {
         if (message.member == null) {
-            console.warn('message received with null member.');
-            return false;
+            throw new Error('Message received with null member.');
         }
 
         const user: GuildMember = message.member;
 
         if (user.roles.cache.find((role: Role) => role.name === roleName) != null) {
-            return true;
+            return;
         }
 
         if (user.guild.roles.cache.find((role: Role) => role.name === roleName) == null) {
             console.warn('Tried to search for role "' + roleName + '" on user but role does not exist in server. Defaulting to true.');
-            return true;
+            return;
         }
 
-        return false;
+        throw new Error('This server requires the role "' + Election.AdminRoleName + '" to run this command.');
     }
 
     private helpText(): string {
@@ -110,7 +119,8 @@ export class Bot {
         text += '- "!vote help": Prints out this text.\n';
         text += '- "!vote audit": Performs an audit, but does not run the tabulation.\n';
         text += '- "!vote tabulate": Performs the election process on the most recent election.\n';
-        text += '      This command may require the "' + Election.AdminRoleName + '" role if your server has it defined.'
+        text += '      This command may require the "' + Election.AdminRoleName + '" role if your server has it defined.\n';
+        text += '- "!vote reset": Resets the most recent election, removing any bot created reactions.';
 
         return text;
     }
