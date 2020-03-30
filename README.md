@@ -2,11 +2,11 @@
 
 To run an election:
 1. Enter some kind of "start" message into your channel.
-  - The content of the message isn't important.
-  - Add the :beginner: reaction (🔰) to mark that it's the start message.
+    - The content of the message isn't important.
+    - Add the :beginner: reaction (🔰) to mark that it's the start message.
 2. List each of your candidates as separate messages.
-  - Add a checkmark reaction to each candidate. e.g. :white_check_mark: (✅).
-  - The bot will trim all non-alphanumeric characters from the starts and ends so dress the text up however you would like.
+    - Add a checkmark reaction to each candidate. e.g. :white_check_mark: (✅).
+    - The bot will trim all non-alphanumeric characters from the starts and ends so dress the text up however you would like.
 3. Have all of your voters react to each candidate with their preference order.
     - Use the :one:, :two:, :three: etc. reactions to mark the user's first, second, third etc. preferences.
     - :zero: counts as the user's tenth option
@@ -30,15 +30,15 @@ To run an election:
 How instant runoff voting is handled:
 1. If there are currently any candidates with a majority of the remaining votes, that candidate wins.
 2. If there is no candidate with a majority of the votes, the bot will pick a candidate to remove.
-  1. If there is a single candidate that has the least number of #1 votes, the bot will eliminate that candidate.
-  2. If there are multiple candidates with the least number of #1 votes, the bot will compute a "preference score" for each candidate:
-      - A person who voted that candidate "last" this gives the candidate 1 point.
-      - If a person voted that candidate "second to last" this gives the candidate 2 points.
-      - etc.
-  3. If there's a single candidate with the lowest score, the bot will eliminate that candidate.
-  4. If there are multiple candidates tied for the lowest score, the bot will eliminate a random one of those candidates.
-3. Once the bot has removed a loser, the bot will defragment all the voter's votes to make sure every voter's votes are promoted.
-4. Repeat step 1.
+3. If there is a single candidate that has the least number of #1 votes, the bot will eliminate that candidate.
+4. If there are multiple candidates with the least number of #1 votes, the bot will compute a "preference score" for each candidate:
+    - A person who voted that candidate "last" this gives the candidate 1 point.
+    - If a person voted that candidate "second to last" this gives the candidate 2 points.
+    - etc.
+5. If there's a single candidate with the lowest score, the bot will eliminate that candidate.
+6. If there are multiple candidates tied for the lowest score, the bot will eliminate a random one of those candidates.
+7. Once the bot has removed a loser, the bot will defragment all the voters' remaining votes to make sure every voter's votes are promoted.
+8. Repeat step 1.
 
 # Development
 
