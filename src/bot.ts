@@ -5,7 +5,7 @@ import { Candidate } from './candidate';
 export class Bot {
     constructor(public client: Client) {
         client.on('ready', this.onReady.bind(this));
-        client.on('message', this.onMessage.bind(this));
+        client.on('message', this.onMessageAsync.bind(this));
     }
 
     onReady(): void {
@@ -18,7 +18,7 @@ export class Bot {
         }
     }
 
-    async onMessage(message: Message | PartialMessage): Promise<void> {
+    async onMessageAsync(message: Message | PartialMessage): Promise<void> {
         // We haven't opted into partials so this should bever be partial
         // but we need the type check.
         if (message.partial) {
@@ -45,10 +45,18 @@ export class Bot {
                     break;
                 // !audit
                 case 'audit':
-                    const election: Election = await Election.CreateElection(message);
-                    let reply: string = 'Election looks to be in order. Candidates:';
+                    const election: Election = await Election.CreateAsync(message);
+                    let reply: string = 'election looks to be in order. Candidates:';
                     for (const candidate of election.candidates) {
                         reply += '\n  - ' + candidate.name;
+
+                        if (candidate.votes.size > 0) {
+                            reply += '\n      ';
+                        }
+
+                        for (const [voter, oridnal] of candidate.votes) {
+                            reply += voter + '=>' + (oridnal + 1) + ' ';
+                        }
                     }
                     await message.reply(reply);
                     break;
