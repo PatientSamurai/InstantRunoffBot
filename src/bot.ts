@@ -121,6 +121,7 @@ export class Bot {
         text += '- "!vote tabulate": Performs the election process on the most recent election.\n';
         text += '      This command may require the "' + Election.AdminRoleName + '" role if your server has it defined.\n';
         text += '- "!vote reset": Resets the most recent election, removing any bot created reactions.\n';
+        text += '      This command may require the "' + Election.AdminRoleName + '" role if your server has it defined.\n';
         text += 'See https://github.com/PatientSamurai/InstantRunoffBot for detailed usage information.'
 
         return text;
