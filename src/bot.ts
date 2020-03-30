@@ -120,7 +120,8 @@ export class Bot {
         text += '- "!vote audit": Performs an audit, but does not run the tabulation.\n';
         text += '- "!vote tabulate": Performs the election process on the most recent election.\n';
         text += '      This command may require the "' + Election.AdminRoleName + '" role if your server has it defined.\n';
-        text += '- "!vote reset": Resets the most recent election, removing any bot created reactions.';
+        text += '- "!vote reset": Resets the most recent election, removing any bot created reactions.\n';
+        text += 'See https://github.com/PatientSamurai/InstantRunoffBot for detailed usage information.'
 
         return text;
     }
