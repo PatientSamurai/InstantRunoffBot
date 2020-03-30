@@ -7,7 +7,7 @@ export class Bot {
         client.on('message', this.onMessageAsync.bind(this));
     }
 
-    onReady(): void {
+    private onReady(): void {
         console.log('Connected');
 
         if (this.client.user == null) {
@@ -17,7 +17,7 @@ export class Bot {
         }
     }
 
-    async onMessageAsync(message: Message | PartialMessage): Promise<void> {
+    private async onMessageAsync(message: Message | PartialMessage): Promise<void> {
         // We haven't opted into partials so this should bever be partial
         // but we need the type check.
         if (message.partial) {
@@ -27,18 +27,24 @@ export class Bot {
 
         try {
             const content: string = message.content;
+            let args: string[] = content.split(' ');
 
-            // Check for leading '!'
-            if (content.substring(0, 1) !== '!') {
+            // Check for leading '!vote'
+            if (args.length === 0 || args[0] !== '!vote') {
                 return;
             }
 
-            let args: string[] = content.substring(1).split(' ');
-            const cmd: string = args[0];
+            // Remove the '!vote' sentinal
             args = args.splice(1);
 
+            let cmd: string = 'help';
+            if (args.length > 0) {
+                cmd = args[0];
+                args = args.splice(1);
+            }
+
             switch (cmd) {
-                // !audit
+                // !vote audit
                 case 'audit':
                     {
                         const election: Election = await Election.CreateAsync(message);
@@ -47,7 +53,7 @@ export class Bot {
                         await message.reply(reply);
                         break;
                     }
-                // !tabulate
+                // !vote tabulate
                 case 'tabulate':
                     {
                         // For this command we require permissions so let's check for those
@@ -60,6 +66,14 @@ export class Bot {
                         election.performElection();
                         break;
                     }
+                default:
+                    {
+                        await message.reply('Unrecognized command.')
+                    }
+                case 'help':
+                    {
+                        await message.reply(this.helpText());
+                    }
             }
         } catch (err) {
             try {
@@ -71,7 +85,7 @@ export class Bot {
         }
     }
 
-    memberHasRole(message: Message, roleName: string): boolean {
+    private memberHasRole(message: Message, roleName: string): boolean {
         if (message.member == null) {
             console.warn('message received with null member.');
             return false;
@@ -89,5 +103,15 @@ export class Bot {
         }
 
         return false;
+    }
+
+    private helpText(): string {
+        let text: string = 'Usage:\n';
+        text += '- "!vote help": Prints out this text.\n';
+        text += '- "!vote audit": Performs an audit, but does not run the tabulation.\n';
+        text += '- "!vote tabulate": Performs the election process on the most recent election.\n';
+        text += '      This command may require the "' + Election.AdminRoleName + '" role if your server has it defined.'
+
+        return text;
     }
 }
