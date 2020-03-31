@@ -1,4 +1,12 @@
-﻿# Usage
+﻿# Overview
+
+InstantRunoffBot is a Discord chat bot that allows you to hold instant runoff elections
+in your Discord channel. All you have to do is list all your candidates, decorate the
+messages with some reactions so the bot can parse them, have your users react to them
+with their ordered preferences and then set the bot free. The bot will quickly run an
+instant runoff election and tell you which candidate wins and also show you its work!
+
+# Usage
 
 To run an election:
 1. Enter some kind of "start" message into your channel.
@@ -7,6 +15,7 @@ To run an election:
 2. List each of your candidates as separate messages.
     - Add a checkmark reaction to each candidate. e.g. 'white_check_mark' (✅).
     - The bot will trim all non-alphanumeric characters from the starts and ends so dress the text up however you would like.
+    - Who sends the message isn't important so you can have your users nominate their own candidates too.
 3. Have all of your voters react to each candidate with their preference order.
     - Use the 'one', 'two', 'three' etc. reactions (1️⃣, 2️⃣, 3️⃣) to mark the user's first, second, third etc. preferences.
     - 'zero' (0️⃣) counts as the user's tenth option
@@ -19,7 +28,7 @@ To run an election:
 5. Once you wish to run the tabulation, use the '!vote tabulate' command.
     - If you define a role with the name 'ElectionAdmin', the bot will enforce only users with that role can run this command.
     - If the role 'ElectionAdmin' is not defined in your server, the bot will allow anyone to run this command.
-    - The bot will run an instant runoff election, and narrow down the candidates to a single winner.
+    - The bot will run an instant runoff election and narrow down the candidates to a single winner.
     - The bot will tell you every step it takes and then display the winner.
     - The bot will mark the winning candidate with a 'trophy' reaction (🏆).
     - The bot will mark the starting message with a 'checkered_flag' reaction (🏁) to mark the election as complete.
@@ -28,17 +37,17 @@ To run an election:
 7. The '!vote help' command will print usage commands.
 
 How instant runoff voting is handled:
-1. If there are currently any candidates with a majority of the remaining votes, that candidate wins.
-2. If there is no candidate with a majority of the votes, the bot will pick a candidate to remove.
-3. If there is a single candidate that has the least number of #1 votes, the bot will eliminate that candidate.
-4. If there are multiple candidates with the least number of #1 votes, the bot will compute a "preference score" for each candidate:
-    - A person who voted that candidate "last" this gives the candidate 1 point.
-    - If a person voted that candidate "second to last" this gives the candidate 2 points.
-    - etc.
-5. If there's a single candidate with the lowest score, the bot will eliminate that candidate.
-6. If there are multiple candidates tied for the lowest score, the bot will eliminate a random one of those candidates.
-7. Once the bot has removed a loser, the bot will defragment all the voters' remaining votes to make sure every voter's votes are promoted.
-8. Repeat step 1.
+1. If there are currently any candidates with a majority of the remaining #1 votes, that candidate wins.
+2. If there is no candidate with a majority of the remaining #1 votes, the bot will pick one candidate to remove:
+    1. If there is a single candidate that has the least number of #1 votes, the bot will eliminate that candidate.
+    2. If there are multiple candidates tied with the least number of #1 votes, the bot will compute a "preference score" for these tied candidates:
+        - A person who voted a candidate "last" gives the candidate 1 point.
+        - A person who voted a candidate "second to last" this gives the candidate 2 points.
+        - etc.
+    3. If there's a single one of these candidates with the lowest preference score total, the bot will eliminate that candidate.
+    4. If there are multiple candidates tied for the lowest score, the bot will eliminate a random one of those candidates.
+5. Once the bot has removed a loser, the bot will defragment all the voters' remaining votes to make sure every voter's votes are promoted.
+6. Loop to step 1.
 
 # Development
 
@@ -52,14 +61,14 @@ Run:
 1. Run "npm run start" from source root.
 
 Debug:
-1. Run "npm run test" from source root.
+1. Run "npm run start:watch" from source root.
 2. Open "chrome://inspect/" in Chrome.
 3. Click "Open dedicated DevTools for Node".
 
 NPM Scripts:
-- "build": Calls TypeScript to transcompile to JavaScript.
+- "build": Builds TypeScript to transcompile to JavaScript.
 - "start": Builds TypeScript and runs built JavaScript with Node.
-- "build:dev": Builds TypeScript and runs static TSLint check.
+- "build:dev": Builds TypeScript and runs TSLint check.
 - "start:dev": Starts TS Node with inspector against source.
 - "build:watch": Runs Nodemon to call build:dev and watch source for changes.
-- "start:watch": Runs Nodemon to start:dev and watch source for changes.
+- "start:watch": Runs Nodemon to call start:dev and watch source for changes.

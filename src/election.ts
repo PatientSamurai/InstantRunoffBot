@@ -83,8 +83,6 @@ export class Election {
             winner = this.findWinner();
         };
 
-        this.logLine('With a majority of ' + winner.voteCount(0) + ' of the remaining ' + this.voterCount + ' top rank votes, "' + winner.name + '" wins!');
-
         await this.startingMessage!.reply(this.log);
         await winner.message.react(Election.WinnerCandidateReaction);
         await this.startingMessage!.react(Election.ElectionFinishedReaction);
@@ -248,7 +246,20 @@ export class Election {
 
     private findWinner(): Candidate | undefined {
         const neededVotes: number = Math.floor(this.voterCount / 2.0) + 1;
-        return this.candidates.find((candidate: Candidate) => candidate.voteCount(0) >= neededVotes);
+
+        let winner: Candidate | undefined;
+        if (this.candidates.length === 1) {
+            // This can technically happen if there are no voters
+            winner = this.candidates[0];
+            this.logLine('As the last remaining candidate, "' + winner.name + '" wins!');
+        } else {
+            winner = this.candidates.find((candidate: Candidate) => candidate.voteCount(0) >= neededVotes);
+            if (winner !== undefined) {
+                this.logLine('With a majority of ' + winner.voteCount(0) + ' of the remaining ' + this.voterCount + ' top rank votes, "' + winner.name + '" wins!');
+            }
+        }
+
+        return winner;
     }
 
     private pickLoser(): Candidate {
@@ -278,10 +289,16 @@ export class Election {
 
         // If we only have one candidate that has the lowest number of top votes, that's our loser
         if (lowestTopVotesCandidates.size === 1) {
-            const loser: Candidate = lowestTopVotesCandidates.keys().next().value();
+            const loser: Candidate = lowestTopVotesCandidates.keys().next().value;
             this.logLine('Eliminating candidate with lowest number of top votes: ' + loser.name);
             return loser;
         }
+
+        // Let's log the state of things
+        this.logLine('Multiple candidates are tied for lowest number of top votes. Calculating preference scores:');
+        let scoreText: string = '';
+        lowestTopVotesCandidates.forEach((score: number, candidate: Candidate) => scoreText += '  "' + candidate.name + '": ' + score);
+        this.logLine(scoreText);
 
         // Figure out what the lowest score is
         let lowestScore = this.candidates.length * this.voterCount; // This is the highest possible score
@@ -294,14 +311,14 @@ export class Election {
         // See if there's an obvious single loser
         if (lowestScorers.length === 1) {
             const loser: Candidate = lowestScorers[0];
-            this.logLine('Eliminating candidate with lowest preference "score": ' + loser.name);
+            this.logLine('Eliminating candidate with lowest preference score: ' + loser.name);
             return loser;
         }
 
         // Looks like something must be eliminated by pure random chance...
         { // Put in a block to keep using the 'loser' name
             const loser: Candidate = lowestScorers[Math.floor(Math.random() * lowestScorers.length)];
-            this.logLine('Eliminating a candidate with least number of top votes at random: ' + loser.name);
+            this.logLine('Multiple candidates are tied for lowest score. Eliminating a tied candidate at random: ' + loser.name);
             return loser;
         }
     }
