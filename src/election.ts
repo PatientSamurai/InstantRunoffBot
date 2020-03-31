@@ -194,7 +194,7 @@ export class Election {
 
     // Returns if any changes were made
     private fixVoteValues(): string[] {
-        const fixedVoters: string[] = new Array();
+        const fixedVoters: Set<string> = new Set();
 
         // We only need to check everyone once so let's keep a set of voters we've already checked
         const checkedVoters: Set<string> = new Set();
@@ -214,6 +214,11 @@ export class Election {
                     const vote: number | undefined = this.candidates[j].votes.get(voter);
                     if (vote !== undefined) {
                         // This voter has voted for this candidate, let's track it
+                        if (votedOrdinals[vote] != null) {
+                            // This voter has voted this value twice
+                            throw new Error('"' + voter + '" has ranked more than one candidate as rank ' + (vote + 1) + '.');
+                        }
+
                         votedOrdinals[vote] = this.candidates[j];
                     }
                 }
@@ -230,7 +235,7 @@ export class Election {
                                 votedOrdinals[k]!.votes.set(voter, j);
                                 votedOrdinals[j] = votedOrdinals[k];
                                 votedOrdinals[k] = null;
-                                fixedVoters.push(voter);
+                                fixedVoters.add(voter);
                                 break;
                             }
                         }
@@ -241,7 +246,7 @@ export class Election {
 
         // Remember how many voters are left with votes
         this.voterCount = checkedVoters.size;
-        return fixedVoters;
+        return Array.from(fixedVoters);
     }
 
     private findWinner(): Candidate | undefined {
