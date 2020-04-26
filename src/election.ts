@@ -74,9 +74,12 @@ export class Election {
 
         let winner: Candidate | undefined = this.findWinner();
         while (winner === undefined) {
-            const loser: Candidate = this.pickLoser();
-            await loser.message.react(Election.LoserCandidateReaction);
-            this.candidates = this.candidates.filter((candidate: Candidate) => candidate !== loser);
+            const losers: Set<Candidate> = this.pickLosers();
+            for (const loser of losers) {
+                await loser.message.react(Election.LoserCandidateReaction);
+            }
+
+            this.candidates = this.candidates.filter((candidate: Candidate) => !losers.has(candidate));
             this.fixVoteValues();
             this.logLine('\nNew election state:');
             this.logLine(this.summarizeState(false /* includeVoters */));
@@ -267,64 +270,57 @@ export class Election {
         return winner;
     }
 
-    private pickLoser(): Candidate {
+    private pickLosers(): Set<Candidate> {
         // First figure out the current lowest value for number of #1 votes any candidate has
         let lowestTopVotes: number = this.voterCount; // This is the highest possible value
+        let secondLowestTopVotes: number = this.voterCount; // This is the highest possible value
         for (const candidate of this.candidates) {
-            lowestTopVotes = Math.min(lowestTopVotes, candidate.voteCount(0));
+            const topVotes: number = candidate.voteCount(0);
+            if (topVotes < lowestTopVotes) {
+                secondLowestTopVotes = lowestTopVotes;
+                lowestTopVotes = topVotes;
+            } else if (topVotes < secondLowestTopVotes && topVotes !== lowestTopVotes) {
+                secondLowestTopVotes = topVotes;
+            }
         }
 
-        // Now pull out all candidates that have the lowest #1 votes and remember their "preference score"
-        const lowestTopVotesCandidates: Map<Candidate, number> = new Map();
-        this.candidates.forEach((candidate: Candidate) => {
-            if (candidate.voteCount(0) === lowestTopVotes) {
-                // Calculate this candidate's "score".
-                // Someone not voting for the candidate, gives the candidate 0 points.
-                // Someone ranking the candidate last of all the remaining candidates gives the candidate 1 point.
-                // Someone ranking the candidate second to last gives the candidate 2 points.
-                // etc. etc
-                let score: number = 0;
-                for (let ordinal: number = 0; ordinal < this.candidates.length; ++ordinal) {
-                    score += (this.candidates.length - ordinal) * candidate.voteCount(ordinal);
-                }
-
-                lowestTopVotesCandidates.set(candidate, score);
-            }
-        });
+        // Now pull out all candidates that have the lowest #1 votes
+        const lowestTopVotesCandidates: Candidate[] = this.candidates.filter((candidate: Candidate) => candidate.voteCount(0) === lowestTopVotes);
 
         // If we only have one candidate that has the lowest number of top votes, that's our loser
-        if (lowestTopVotesCandidates.size === 1) {
-            const loser: Candidate = lowestTopVotesCandidates.keys().next().value;
+        if (lowestTopVotesCandidates.length === 1) {
+            const loser: Candidate = lowestTopVotesCandidates[0];
             this.logLine('Eliminating candidate with lowest number of top votes: ' + loser.name);
-            return loser;
+            return new Set([loser]);
+        }
+
+        // Form a string of all the losers to be used later
+        let losersString: string = '';
+        lowestTopVotesCandidates.forEach((candidate: Candidate) => {
+            if (losersString.length !== 0) {
+                losersString += ', ';
+            }
+
+            losersString += '"' + candidate.name + '"';
+        });
+
+        // If the number of top votes won by the tied losers is less than the next highest number of top votes,
+        // they can all be eliminated.
+        if (lowestTopVotes * lowestTopVotesCandidates.length < secondLowestTopVotes) {
+            this.logLine('Eliminating all candidates with tied lowest tope votes:');
+            this.logLine(losersString);
+            return new Set(lowestTopVotesCandidates);
         }
 
         // Let's log the state of things
-        this.logLine('Multiple candidates are tied for lowest number of top votes. Calculating preference scores:');
-        let scoreText: string = '';
-        lowestTopVotesCandidates.forEach((score: number, candidate: Candidate) => scoreText += '  "' + candidate.name + '": ' + score);
-        this.logLine(scoreText);
+        this.logLine('Multiple candidates are tied for lowest number of top votes:');
+        this.logLine(losersString);
 
-        // Figure out what the lowest score is
-        let lowestScore = this.candidates.length * this.voterCount; // This is the highest possible score
-        lowestTopVotesCandidates.forEach((score: number) => lowestScore = Math.min(lowestScore, score));
-
-        // Pull out all the lowest scorers
-        const lowestScorers: Candidate[] = [];
-        lowestTopVotesCandidates.forEach((score: number, candidate: Candidate) => { if (score === lowestScore) { lowestScorers.push(candidate); } });
-
-        // See if there's an obvious single loser
-        if (lowestScorers.length === 1) {
-            const loser: Candidate = lowestScorers[0];
-            this.logLine('Eliminating candidate with lowest preference score: ' + loser.name);
-            return loser;
-        }
-
-        // Looks like something must be eliminated by pure random chance...
-        { // Put in a block to keep using the 'loser' name
-            const loser: Candidate = lowestScorers[Math.floor(Math.random() * lowestScorers.length)];
-            this.logLine('Multiple candidates are tied for lowest score. Eliminating a tied candidate at random: ' + loser.name);
-            return loser;
+        // Pick a loser by pure random chance...
+        { // Braces to protect against shadowed variable
+            const loser: Candidate = lowestTopVotesCandidates[Math.floor(Math.random() * lowestTopVotesCandidates.length)];
+            this.logLine('Eliminating a tied candidate at random: ' + loser.name);
+            return new Set([loser]);
         }
     }
 

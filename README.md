@@ -38,15 +38,11 @@ To run an election:
 
 How instant runoff voting is handled:
 1. If there are currently any candidates with a majority of the remaining #1 votes, that candidate wins.
-2. If there is no candidate with a majority of the remaining #1 votes, the bot will pick one candidate to remove:
+2. If there is no candidate with a majority of the remaining #1 votes, the bot will pick one or more candidates to remove:
     1. If there is a single candidate that has the least number of #1 votes, the bot will eliminate that candidate.
-    2. If there are multiple candidates tied with the least number of #1 votes, the bot will compute a "preference score" for these tied candidates:
-        - A person who voted a candidate "last" gives the candidate 1 point.
-        - A person who voted a candidate "second to last" this gives the candidate 2 points.
-        - etc.
-    3. If there's a single one of these candidates with the lowest preference score total, the bot will eliminate that candidate.
-    4. If there are multiple candidates tied for the lowest score, the bot will eliminate a random one of those candidates.
-5. Once the bot has removed a loser, the bot will defragment all the voters' remaining votes to make sure every voter's votes are promoted.
+    2. If there are multiple candidates tied with the least number of #1 votes, and the sum of their votes is lower than the next highest top vote winner, they are all removed.
+    3. If this is not the case, a random candidate with the lowest number of top votes is removed.
+5. Once the bot has removed a loser(s), the bot will defragment all the voters' remaining votes to make sure every voter's votes are promoted.
 6. Loop to step 1.
 
 # Development
