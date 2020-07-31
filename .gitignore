@@ -1,6 +1,9 @@
 # Auth token security
 auth-data.ts
 
+# Mac files
+.DS_Store
+
 # Visual Studio files
 .vs
 
