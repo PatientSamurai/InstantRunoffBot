@@ -24,14 +24,14 @@
     "ext": "ts"
   },
   "dependencies": {
-    "@types/node": "^12.12.31",
-    "@types/ws": "^7.2.3",
-    "discord.js": "^12.0.2",
-    "typescript": "^3.8.3"
+    "@types/node": "^12.12.53",
+    "@types/ws": "^7.2.6",
+    "discord.js": "^12.2.0",
+    "typescript": "^3.9.7"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2",
-    "ts-node": "^8.8.1",
-    "tslint": "^6.1.0"
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "tslint": "^6.1.3"
   }
 }
