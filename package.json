@@ -24,9 +24,9 @@
     "ext": "ts"
   },
   "dependencies": {
-    "@types/node": "^12.12.53",
+    "@types/node": "^12.12.62",
     "@types/ws": "^7.2.6",
-    "discord.js": "^12.2.0",
+    "discord.js": "^12.3.1",
     "typescript": "^3.9.7"
   },
   "devDependencies": {
