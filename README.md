@@ -8,7 +8,7 @@ instant runoff election and tell you which candidate wins and also show you its 
 
 # Usage
 
-To run an election:
+## To run an election
 1. Enter some kind of "start" message into your channel.
     - The content of the message isn't important.
     - Add the 'beginner' reaction (🔰) to mark that it's the start message.
@@ -36,7 +36,7 @@ To run an election:
     - This command also requires the 'ElectionAdmin' role if it exists.
 7. The '!vote help' command will print usage commands.
 
-How instant runoff voting is handled:
+## How instant runoff voting is handled
 1. If there are currently any candidates with a majority of the remaining #1 votes, that candidate wins.
 2. If there is no candidate with a majority of the remaining #1 votes, the bot will pick one or more candidates to remove:
     1. If there is a single candidate that has the least number of #1 votes, the bot will eliminate that candidate.
@@ -55,6 +55,7 @@ The value of 68672 for permissions corresponds with 0x10C40:
 - 0x400 (Read messages) |
 - 0x800 (Send messages) |
 - 0x10000 (Read message history)
+
 which is the minimal set of permissions required for the bot to work properly.
 
 ## Set up
