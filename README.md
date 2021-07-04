@@ -47,21 +47,31 @@ How instant runoff voting is handled:
 
 # Development
 
-Set up:
+## Add bot to server
+You can add the bot to your server using this link: https://discord.com/oauth2/authorize?client_id=CLIENTID&scope=bot%20applications.commands&permissions=68672. Replace the client_id parameter with your own client ID.
+
+The value of 68672 for permissions corresponds with 0x10C40:
+- 0x40 (Add reactions) |
+- 0x400 (Read messages) |
+- 0x800 (Send messages) |
+- 0x10000 (Read message history)
+which is the minimal set of permissions required for the bot to work properly.
+
+## Set up
 1. Clone repo.
 2. Copy ".env.sample" to ".env" and insert bot secret.
 3. Install Node.js from https://nodejs.org.
 4. Run "npm install" from source root.
 
-Run:
+## Run
 1. Run "npm run start" from source root.
 
-Debug:
+## Debug
 1. Run "npm run start:watch" from source root.
 2. Open "chrome://inspect/" in Chrome.
 3. Click "Open dedicated DevTools for Node".
 
-NPM Scripts:
+## NPM Scripts
 - "build": Builds TypeScript to transcompile to JavaScript.
 - "start": Builds TypeScript and runs built JavaScript with Node.
 - "build:dev": Builds TypeScript and runs TSLint check.
