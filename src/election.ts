@@ -307,7 +307,7 @@ export class Election {
         // If the number of top votes won by the tied losers is less than the next highest number of top votes,
         // they can all be eliminated.
         if (lowestTopVotes * lowestTopVotesCandidates.length < secondLowestTopVotes) {
-            this.logLine('Eliminating all candidates with tied lowest tope votes:');
+            this.logLine('Eliminating all candidates with tied lowest top votes:');
             this.logLine(losersString);
             return new Set(lowestTopVotesCandidates);
         }
